@@ -1,0 +1,562 @@
+openapi: 3.0.3
+info:
+  title: HR Manager API
+  description: Sistema de Control de Permisos, Vacaciones e Inasistencias
+  version: 1.0.0
+  contact:
+    name: HR Manager Team
+
+servers:
+  - url: http://localhost:8000/api
+    description: Development server
+
+paths:
+  /users/:
+    get:
+      summary: Listar usuarios
+      tags: [Users]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Crear usuario
+      tags: [Users]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: Usuario creado
+
+  /users/me/:
+    get:
+      summary: Datos del usuario actual
+      tags: [Users]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Datos del usuario
+
+  /users/generate_api_key/:
+    post:
+      summary: Generar API Key
+      tags: [Users]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: API Key generada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+
+  /users/revoke_api_key/:
+    delete:
+      summary: Revocar API Key
+      tags: [Users]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: API Key revocada
+
+  /branches/:
+    get:
+      summary: Listar sucursales
+      tags: [Branches]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de sucursales
+
+  /branches/{id}/empleados/:
+    get:
+      summary: Empleados de una sucursal
+      tags: [Branches]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de empleados
+
+  /employees/:
+    get:
+      summary: Listar empleados
+      tags: [Employees]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de empleados
+    post:
+      summary: Crear empleado
+      tags: [Employees]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeCreate'
+      responses:
+        '201':
+          description: Empleado creado
+
+  /employees/me/:
+    get:
+      summary: Perfil del empleado actual
+      tags: [Employees]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Perfil del empleado
+
+  /requests/:
+    get:
+      summary: Listar solicitudes
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pendiente, aprobado, rechazado]
+        - name: tipo
+          in: query
+          schema:
+            type: string
+            enum: [vacacion, permiso]
+      responses:
+        '200':
+          description: Lista de solicitudes
+    post:
+      summary: Crear solicitud
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestCreate'
+      responses:
+        '201':
+          description: Solicitud creada
+
+  /requests/{id}/:
+    get:
+      summary: Detalle de solicitud
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Detalle de solicitud
+    patch:
+      summary: Actualizar solicitud pendiente
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Solicitud actualizada
+    delete:
+      summary: Cancelar solicitud pendiente
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Solicitud cancelada
+
+  /requests/{id}/aprobar/:
+    post:
+      summary: Aprobar solicitud
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comentario:
+                  type: string
+      responses:
+        '200':
+          description: Solicitud aprobada
+
+  /requests/{id}/rechazar/:
+    post:
+      summary: Rechazar solicitud
+      tags: [Requests]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comentario:
+                  type: string
+      responses:
+        '200':
+          description: Solicitud rechazada
+
+  /absences/:
+    get:
+      summary: Listar inasistencias
+      tags: [Absences]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de inasistencias
+    post:
+      summary: Registrar inasistencia
+      tags: [Absences]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbsenceCreate'
+      responses:
+        '201':
+          description: Inasistencia registrada
+
+  /absences/por_empleado/:
+    get:
+      summary: Inasistencias por empleado
+      tags: [Absences]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: empleado_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de inasistencias
+
+  /absences/por_sucursal/:
+    get:
+      summary: Inasistencias por sucursal
+      tags: [Absences]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      parameters:
+        - name: sucursal_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de inasistencias
+
+  /dashboard/:
+    get:
+      summary: Métricas operativas
+      tags: [Dashboard]
+      security:
+        - ApiKey: []
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Métricas según rol del usuario
+
+components:
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Formato: ApiKey <tu_api_key>"
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        full_name:
+          type: string
+        role:
+          type: string
+          enum: [admin, manager, user]
+        telegram_chat_id:
+          type: string
+
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        role:
+          type: string
+          enum: [admin, manager, user]
+
+    Employee:
+      type: object
+      properties:
+        id:
+          type: integer
+        employee_number:
+          type: string
+        curp:
+          type: string
+        rfc:
+          type: string
+        tipo_contrato:
+          type: string
+          enum: [laboral, mercantil]
+        fecha_ingreso:
+          type: string
+          format: date
+        saldo_vacaciones:
+          type: number
+        branch:
+          type: integer
+        manager:
+          type: integer
+        status:
+          type: string
+          enum: [activo, baja, suspendido]
+
+    EmployeeCreate:
+      type: object
+      required:
+        - employee_number
+        - fecha_ingreso
+        - email
+      properties:
+        employee_number:
+          type: string
+        curp:
+          type: string
+        rfc:
+          type: string
+        tipo_contrato:
+          type: string
+          enum: [laboral, mercantil]
+        fecha_ingreso:
+          type: string
+          format: date
+        branch:
+          type: integer
+        manager:
+          type: integer
+        status:
+          type: string
+          enum: [activo, baja, suspendido]
+        email:
+          type: string
+        password:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+
+    Request:
+      type: object
+      properties:
+        id:
+          type: integer
+        tipo:
+          type: string
+          enum: [vacacion, permiso]
+        fecha_inicio:
+          type: string
+          format: date
+        fecha_fin:
+          type: string
+          format: date
+        estatus:
+          type: string
+          enum: [pendiente, aprobado, rechazado]
+        observaciones_sistema:
+          type: string
+        comentario_admin:
+          type: string
+        empleado:
+          type: integer
+        fuera_de_condiciones:
+          type: boolean
+        dias_solicitados:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    RequestCreate:
+      type: object
+      required:
+        - tipo
+        - fecha_inicio
+        - fecha_fin
+      properties:
+        tipo:
+          type: string
+          enum: [vacacion, permiso]
+        fecha_inicio:
+          type: string
+          format: date
+        fecha_fin:
+          type: string
+          format: date
+        fuera_de_condiciones:
+          type: boolean
+
+    Absence:
+      type: object
+      properties:
+        id:
+          type: integer
+        empleado:
+          type: integer
+        fecha:
+          type: string
+          format: date
+        sucursal:
+          type: integer
+        tipo:
+          type: string
+          enum: [injustificada, enfermedad, suspension, retardo, permiso_sin_goce, otro]
+        motivo:
+          type: string
+        registrado_por:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    AbsenceCreate:
+      type: object
+      required:
+        - empleado
+        - fecha
+        - tipo
+      properties:
+        empleado:
+          type: integer
+        fecha:
+          type: string
+          format: date
+        sucursal:
+          type: integer
+        tipo:
+          type: string
+          enum: [injustificada, enfermedad, suspension, retardo, permiso_sin_goce, otro]
+        motivo:
+          type: string

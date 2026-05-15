@@ -315,8 +315,8 @@ Fase 4 → Fase 5
 | Fase 3 | 16/16 | 16 | 100% |
 | Fase 4 | 21/21 | 21 | 100% |
 | Fase 5 | 15/15 | 15 | 100% |
-| Transversales | 10/14 | 14 | 71% |
-| **TOTAL** | **104/108** | **108** | **96%** |
+| Transversales | 11/14 | 14 | 79% |
+| **TOTAL** | **105/108** | **108** | **97%** |
 
 ---
 
@@ -327,10 +327,9 @@ Fase 4 → Fase 5
 |-------|-----------|-------------|
 | Configurar CI/CD pipeline | Media | Media |
 
-### Documentación (3 tareas)
+### Documentación (2 tareas)
 | Tarea | Prioridad | Complejidad |
 |-------|-----------|-------------|
-| DRF-spectacular (OpenAPI) | Alta | Baja |
 | Manual de usuario | Media | Media |
 | Documentar variables de entorno | Baja | Baja |
 
