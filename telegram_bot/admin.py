@@ -1,3 +1,1 @@
-from django.contrib import admin
-
-# Register your models here.
+"""Administración del módulo Telegram Bot."""

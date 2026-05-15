@@ -1,4 +1,7 @@
-"""ViewSets para la API REST de solicitudes con permisos por rol."""
+"""ViewSets para la API REST de solicitudes con permisos por rol.
+
+Integra notificaciones asíncronas vía Celery cuando se crea una solicitud.
+"""
 
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
@@ -55,9 +58,21 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Request.objects.filter(empleado__user=user)
 
     def perform_create(self, serializer):
-        """Asigna automáticamente el empleado del usuario autenticado."""
+        """Asigna automáticamente el empleado del usuario autenticado.
+
+        Después de crear la solicitud, dispara notificación asíncrona al admin
+        vía Celery para no bloquear la respuesta HTTP.
+        """
         empleado = self.request.user.employee
-        serializer.save(empleado=empleado)
+        request_obj = serializer.save(empleado=empleado)
+
+        # Notificación asíncrona al admin vía Celery
+        try:
+            from telegram_bot.tasks import enviar_notificacion_admin
+            enviar_notificacion_admin.delay(request_obj.id)
+        except Exception as e:
+            import logging
+            logging.getLogger(__name__).error(f"Error enviando notificación: {e}")
 
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):

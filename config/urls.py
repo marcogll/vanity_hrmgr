@@ -1,3 +1,12 @@
+"""Configuración de URLs del proyecto HR Manager.
+
+Incluye:
+- Admin Django
+- API REST (core.urls)
+- Vistas web del dashboard
+- Webhook de Telegram Bot
+"""
+
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -9,6 +18,7 @@ from core.web_views import (
     exportar_vacaciones, exportar_permisos, exportar_ausencias,
     mi_perfil, mis_solicitudes, nueva_solicitud
 )
+from telegram_bot.views import webhook
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +39,7 @@ urlpatterns = [
     path('mi-perfil/', mi_perfil, name='mi_perfil'),
     path('mis-solicitudes/', mis_solicitudes, name='mis_solicitudes'),
     path('nueva-solicitud/', nueva_solicitud, name='nueva_solicitud'),
+    path('telegram/webhook/', webhook, name='telegram_webhook'),
 ]
 
 if settings.DEBUG:

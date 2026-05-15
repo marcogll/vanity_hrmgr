@@ -1,5 +1,12 @@
-"""
-Django settings for HR Manager project.
+"""Settings de Django para HR Manager.
+
+Configuración centralizada para:
+- Apps instaladas y middleware
+- Base de datos PostgreSQL
+- Redis y Celery para tareas asíncronas
+- Autenticación JWT + API Key + Sesión
+- Logging de seguridad y auditoría
+- Integración con Telegram Bot
 """
 
 import os

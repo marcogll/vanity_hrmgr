@@ -1,3 +1,5 @@
-from django.db import models
+"""Modelos para el módulo Telegram Bot.
 
-# Create your models here.
+Los modelos de notificaciones están en core.models.NotificationLog
+para mantener centralizado el registro de auditoría.
+"""

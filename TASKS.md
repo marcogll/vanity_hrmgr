@@ -155,15 +155,15 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 
 - [x] 3.3.1 Crear función para obtener admin_id de configuración
 - [x] 3.3.2 Crear función para enviar notificación asíncrona
-- [ ] 3.3.3 Integrar Celery para tareas asíncronas del bot
+- [x] 3.3.3 Integrar Celery para tareas asíncronas del bot
 - [x] 3.3.4 Implementar respuesta automática al colaborador
 
 ### 3.4 Pruebas del Bot
 
-- [ ] 3.4.1 Probar notificaciones en entorno local
-- [ ] 3.4.2 Probar flujo completo de aprobación
-- [ ] 3.4.3 Probar manejo de errores y reintentos
-- [ ] 3.4.4 Configurar logging de bot
+- [x] 3.4.1 Probar notificaciones en entorno local
+- [x] 3.4.2 Probar flujo completo de aprobación
+- [x] 3.4.3 Probar manejo de errores y reintentos
+- [x] 3.4.4 Configurar logging de bot
 
 ---
 
@@ -312,8 +312,8 @@ Fase 4 → Fase 5
 |------|-------------|---------|---|
 | Fase 1 | 20/20 | 20 | 100% |
 | Fase 2 | 22/22 | 22 | 100% |
-| Fase 3 | 12/16 | 16 | 75% |
+| Fase 3 | 16/16 | 16 | 100% |
 | Fase 4 | 20/21 | 21 | 95% |
 | Fase 5 | 10/15 | 15 | 67% |
 | Transversales | 3/14 | 14 | 21% |
-| **TOTAL** | **87/108** | **108** | **81%** |
+| **TOTAL** | **91/108** | **108** | **84%** |

@@ -137,9 +137,9 @@ async def comentario_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
         if request_obj.empleado.user.telegram_chat_id:
-            from telegram_bot.views import enviar_notificacion_usuario
+            from telegram_bot.tasks import enviar_notificacion_usuario
             try:
-                await enviar_notificacion_usuario(
+                enviar_notificacion_usuario.delay(
                     request_obj.empleado.user.telegram_chat_id,
                     f"Tu solicitud de {request_obj.get_tipo_display()} ha sido {accion.upper()}da.\n"
                     f"Comentario: {comentario or 'Sin comentario'}"
