@@ -1,0 +1,1 @@
+"""App para gestión de días festivos del calendario laboral mexicano."""

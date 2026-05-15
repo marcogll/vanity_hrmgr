@@ -1,0 +1,1 @@
+"""App para gestión de solicitudes de vacaciones y permisos."""

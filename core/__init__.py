@@ -1,0 +1,1 @@
+"""App central para catálogos, configuraciones y utilidades del sistema."""

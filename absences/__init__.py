@@ -1,0 +1,1 @@
+"""App para registro y auditoría de inasistencias laborales."""

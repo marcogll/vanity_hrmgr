@@ -1,3 +1,1 @@
-from django.shortcuts import render
-
-# Create your views here.
+"""Vistas para el módulo feriados (actualmente gestionado vía admin y API)."""

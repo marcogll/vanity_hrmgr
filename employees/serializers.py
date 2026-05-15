@@ -44,9 +44,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         read_only_fields = ['saldo_vacaciones', 'created_at', 'updated_at']
 
     def get_antiguedad(self, obj):
+        """Calcula la antigüedad en años desde la fecha de ingreso."""
         return obj.calcular_antiguedad()
 
     def get_dias_vacaciones_prox(self, obj):
+        """Retorna los días de vacaciones correspondientes según antigüedad."""
         return obj.get_dias_vacaciones()
 
 

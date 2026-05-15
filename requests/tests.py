@@ -1,3 +1,1 @@
-from django.test import TestCase
-
-# Create your tests here.
+"""Tests para el módulo solicitudes: vacaciones y permisos."""

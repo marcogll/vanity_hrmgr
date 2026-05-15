@@ -1,0 +1,1 @@
+"""App para gestión de empleados, sucursales, usuarios y auditoría."""

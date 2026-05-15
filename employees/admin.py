@@ -1,3 +1,5 @@
+"""Administración del módulo empleados: usuarios, sucursales y auditoría."""
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from .models import User, Branch, Employee, EmployeeAudit
@@ -5,6 +7,7 @@ from .models import User, Branch, Employee, EmployeeAudit
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
+    """Panel de administración para usuarios del sistema con roles."""
     list_display = ['username', 'email', 'first_name', 'last_name', 'role', 'is_active']
     list_filter = ['role', 'is_active', 'is_staff']
     fieldsets = BaseUserAdmin.fieldsets + (
@@ -14,6 +17,7 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
+    """Panel de administración para sucursales de la empresa."""
     list_display = ['name', 'active', 'created_at']
     list_filter = ['active']
     search_fields = ['name']
@@ -21,6 +25,7 @@ class BranchAdmin(admin.ModelAdmin):
 
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
+    """Panel de administración para empleados con búsqueda avanzada."""
     list_display = ['employee_number', 'user', 'branch', 'tipo_contrato', 'status', 'saldo_vacaciones']
     list_filter = ['status', 'tipo_contrato', 'branch']
     search_fields = ['employee_number', 'user__first_name', 'user__last_name', 'curp', 'rfc']
@@ -29,6 +34,7 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 @admin.register(EmployeeAudit)
 class EmployeeAuditAdmin(admin.ModelAdmin):
+    """Panel de auditoría para cambios en datos de empleados."""
     list_display = ['employee', 'action', 'field_changed', 'changed_by', 'created_at']
     list_filter = ['action']
     readonly_fields = ['created_at']

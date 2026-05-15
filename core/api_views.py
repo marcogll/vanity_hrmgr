@@ -23,6 +23,15 @@ class DashboardAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        """Retorna métricas operativas filtradas por rol del usuario.
+
+        Admin: KPIs globales de todas las sucursales
+        Manager: KPIs filtrados por sucursales asignadas
+        User: Datos personales de vacaciones y solicitudes
+
+        Returns:
+            Response: Diccionario con métricas según rol
+        """
         user = request.user
         first_day_month = date.today().replace(day=1)
         week_ago = date.today() - timedelta(days=7)

@@ -1,0 +1,1 @@
+"""App para integración con Telegram Bot: notificaciones y aprobaciones."""
