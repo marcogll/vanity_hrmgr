@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
+from django.core.paginator import Paginator
 from datetime import date, timedelta
 from employees.models import User, Branch, Employee
 from requests.models import Request
@@ -88,9 +89,13 @@ def dashboard(request):
 
 @login_required
 def empleados_view(request):
-    """Lista de empleados con búsqueda por nombre, número y CURP."""
+    """Lista de empleados con búsqueda por nombre, número y CURP.
+
+    Resultados paginados (20 por página) con navegación.
+    """
     user = request.user
     search = request.GET.get('search', '')
+    page = request.GET.get('page', 1)
 
     if user.role == 'admin':
         queryset = Employee.objects.all()
@@ -105,16 +110,27 @@ def empleados_view(request):
             Q(curp__icontains=search)
         )
 
-    empleados = queryset.order_by('employee_number')
-    return render(request, 'empleados.html', {'empleados': empleados, 'search': search})
+    empleados_qs = queryset.order_by('employee_number')
+    paginator = Paginator(empleados_qs, 20)
+    empleados = paginator.get_page(page)
+
+    return render(request, 'empleados.html', {
+        'empleados': empleados,
+        'search': search,
+        'total': paginator.count,
+    })
 
 
 @login_required
 def solicitudes_view(request):
-    """Lista de solicitudes con filtros por estatus y tipo."""
+    """Lista de solicitudes con filtros por estatus y tipo.
+
+    Resultados paginados (25 por página) con navegación.
+    """
     user = request.user
     status_filter = request.GET.get('status', '')
     tipo_filter = request.GET.get('tipo', '')
+    page = request.GET.get('page', 1)
 
     if user.role == 'admin':
         queryset = Request.objects.all()
@@ -126,8 +142,15 @@ def solicitudes_view(request):
     if tipo_filter:
         queryset = queryset.filter(tipo=tipo_filter)
 
-    solicitudes = queryset.order_by('-created_at')[:50]
-    return render(request, 'solicitudes.html', {'solicitudes': solicitudes})
+    solicitudes_qs = queryset.order_by('-created_at')
+    paginator = Paginator(solicitudes_qs, 25)
+    solicitudes = paginator.get_page(page)
+
+    return render(request, 'solicitudes.html', {
+        'solicitudes': solicitudes,
+        'status_filter': status_filter,
+        'tipo_filter': tipo_filter,
+    })
 
 
 @login_required
@@ -175,7 +198,10 @@ def solicitudes_pendientes_view(request):
 
 @login_required
 def ausencias_view(request):
-    """Historial de inasistencias con filtros por sucursal, tipo y fecha."""
+    """Historial de inasistencias con filtros por sucursal, tipo y fecha.
+
+    Resultados paginados (25 por página) con navegación.
+    """
     if request.user.role not in ['admin', 'manager']:
         return redirect('dashboard')
 
@@ -185,6 +211,7 @@ def ausencias_view(request):
     tipo = request.GET.get('tipo', '')
     fecha_inicio = request.GET.get('fecha_inicio', '')
     fecha_fin = request.GET.get('fecha_fin', '')
+    page = request.GET.get('page', 1)
 
     if user.role == 'admin':
         queryset = Absence.objects.all()
@@ -208,7 +235,9 @@ def ausencias_view(request):
     if fecha_fin:
         queryset = queryset.filter(fecha__lte=fecha_fin)
 
-    ausencias = queryset.order_by('-fecha')[:50]
+    ausencias_qs = queryset.order_by('-fecha')
+    paginator = Paginator(ausencias_qs, 25)
+    ausencias = paginator.get_page(page)
 
     context = {
         'ausencias': ausencias,

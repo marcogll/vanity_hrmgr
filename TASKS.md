@@ -198,7 +198,7 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 - [x] 4.4.1 Crear formulario de búsqueda global
 - [x] 4.4.2 Buscar por nombre, número de empleado, CURP
 - [x] 4.4.3 Filtrar por estatus laboral y sucursal
-- [ ] 4.4.4 Mostrar resultados en tabla paginada
+- [x] 4.4.4 Mostrar resultados en tabla paginada
 
 ### 4.5 Panel de Transparencia
 
@@ -313,7 +313,7 @@ Fase 4 → Fase 5
 | Fase 1 | 20/20 | 20 | 100% |
 | Fase 2 | 22/22 | 22 | 100% |
 | Fase 3 | 16/16 | 16 | 100% |
-| Fase 4 | 20/21 | 21 | 95% |
+| Fase 4 | 21/21 | 21 | 100% |
 | Fase 5 | 10/15 | 15 | 67% |
 | Transversales | 3/14 | 14 | 21% |
-| **TOTAL** | **91/108** | **108** | **84%** |
+| **TOTAL** | **92/108** | **108** | **85%** |

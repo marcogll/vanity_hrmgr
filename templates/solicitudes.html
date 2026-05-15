@@ -6,6 +6,7 @@
     <a href="?status=pendiente" class="btn btn-sm btn-warning">Pendientes</a>
     <a href="?status=aprobado" class="btn btn-sm btn-success">Aprobadas</a>
     <a href="?status=rechazado" class="btn btn-sm btn-danger">Rechazadas</a>
+    <a href="?" class="btn btn-sm btn-secondary ms-2">Todas</a>
 </div>
 <table class="table">
     <thead><tr><th>#</th><th>Empleado</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Status</th></tr></thead>
@@ -20,7 +21,33 @@
             <td>{{ s.dias_solicitados }}</td>
             <td><span class="badge bg-{% if s.estatus == 'pendiente' %}warning{% elif s.estatus == 'aprobado' %}success{% else %}danger{% endif %}">{{ s.get_estatus_display }}</span></td>
         </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-center text-muted">No se encontraron solicitudes</td></tr>
         {% endfor %}
     </tbody>
 </table>
+
+{% if solicitudes.has_other_pages %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if solicitudes.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ solicitudes.previous_page_number }}&status={{ status_filter }}&tipo={{ tipo_filter }}">Anterior</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        {% endif %}
+        {% for num in solicitudes.paginator.page_range %}
+            {% if solicitudes.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > solicitudes.number|add:'-3' and num < solicitudes.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}&status={{ status_filter }}&tipo={{ tipo_filter }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if solicitudes.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ solicitudes.next_page_number }}&status={{ status_filter }}&tipo={{ tipo_filter }}">Siguiente</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}

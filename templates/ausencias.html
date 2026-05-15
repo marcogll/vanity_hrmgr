@@ -54,4 +54,28 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% if ausencias.has_other_pages %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if ausencias.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ ausencias.previous_page_number }}&search={{ search }}&sucursal={{ selected_sucursal }}&tipo={{ selected_tipo }}&fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">Anterior</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+        {% endif %}
+        {% for num in ausencias.paginator.page_range %}
+            {% if ausencias.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > ausencias.number|add:'-3' and num < ausencias.number|add:'3' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ search }}&sucursal={{ selected_sucursal }}&tipo={{ selected_tipo }}&fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">{{ num }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if ausencias.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ ausencias.next_page_number }}&search={{ search }}&sucursal={{ selected_sucursal }}&tipo={{ selected_tipo }}&fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}">Siguiente</a></li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
