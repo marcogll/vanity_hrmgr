@@ -315,39 +315,32 @@ Fase 4 → Fase 5
 | Fase 3 | 16/16 | 16 | 100% |
 | Fase 4 | 21/21 | 21 | 100% |
 | Fase 5 | 15/15 | 15 | 100% |
-| Transversales | 3/14 | 14 | 21% |
-| **TOTAL** | **97/108** | **108** | **90%** |
+| Transversales | 10/14 | 14 | 71% |
+| **TOTAL** | **104/108** | **108** | **96%** |
+
 ---
 
 ## Pendientes - Reporte Final
 
-### Testing (5 tareas)
+### Testing (1 tarea)
 | Tarea | Prioridad | Complejidad |
 |-------|-----------|-------------|
-| Crear fixtures para datos de prueba | Media | Baja |
-| Tests unitarios para modelos | Alta | Media |
-| Tests para serializers y validaciones | Alta | Media |
-| Tests de integración para API | Alta | Alta |
 | Configurar CI/CD pipeline | Media | Media |
 
-### Documentación (4 tareas)
+### Documentación (3 tareas)
 | Tarea | Prioridad | Complejidad |
 |-------|-----------|-------------|
-| Documentar API con DRF-spectacular (OpenAPI) | Alta | Baja |
-| Docs de despliegue | Media | Baja |
+| DRF-spectacular (OpenAPI) | Alta | Baja |
 | Manual de usuario | Media | Media |
 | Documentar variables de entorno | Baja | Baja |
 
-### Seguridad (2 tareas)
+### Seguridad (1 tarea)
 | Tarea | Prioridad | Complejidad |
 |-------|-----------|-------------|
-| Rate limiting en API | Media | Media |
 | Revisión OWASP | Alta | Media |
 
-### Despliegue (4 tareas)
+### Despliegue (2 tareas)
 | Tarea | Prioridad | Complejidad |
 |-------|-----------|-------------|
 | Configurar nginx + gunicorn | Alta | Media |
-| Celery como servicio | Alta | Media |
-| Backups PostgreSQL | Media | Baja |
 | Monitoreo (Sentry/NewRelic) | Media | Media |
