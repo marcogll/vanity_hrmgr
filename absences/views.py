@@ -3,11 +3,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Absence
 from .serializers import AbsenceSerializer
+from core.permissions import IsAdminOrManager
 
 
 class AbsenceViewSet(viewsets.ModelViewSet):
     serializer_class = AbsenceSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminOrManager]
 
     def get_queryset(self):
         user = self.request.user

@@ -6,8 +6,10 @@ from django.db.models import Q
 from datetime import date, timedelta
 from employees.models import User, Branch, Employee
 from requests.models import Request
-from absences.models import Absence
+from absences.models import Absence, AbsenceAudit
+from absences.forms import AbsenceForm
 from holidays.models import Holiday
+from .reports import generate_excel_report
 
 
 def login_view(request):
@@ -45,11 +47,22 @@ def dashboard(request):
             fecha__gte=date.today() - timedelta(days=7)
         ).count()
 
+        # Monthly Metrics
+        first_day_month = date.today().replace(day=1)
+        absences_month = Absence.objects.filter(fecha__gte=first_day_month).count()
+        requests_month = Request.objects.filter(created_at__date__gte=first_day_month).count()
+        vacations_approved = Request.objects.filter(
+            tipo='vacacion', estatus='aprobado', updated_at__date__gte=first_day_month
+        ).count()
+
         context = {
             'branches': branches,
             'employees_count': employees.count(),
             'solicitudes_pendientes': solicitudes_pendientes,
             'absences_week': absences_week,
+            'absences_month': absences_month,
+            'requests_month': requests_month,
+            'vacations_approved': vacations_approved,
         }
         return render(request, 'dashboard_admin.html', context)
     else:
@@ -150,12 +163,75 @@ def ausencias_view(request):
     if request.user.role not in ['admin', 'manager']:
         return redirect('dashboard')
 
-    if request.user.role == 'admin':
-        ausencia_list = Absence.objects.all()[:50]
-    else:
-        ausencia_list = Absence.objects.filter(sucursal__in=request.user.branch_set.all())[:50]
+    user = request.user
+    search = request.GET.get('search', '')
+    sucursal_id = request.GET.get('sucursal', '')
+    tipo = request.GET.get('tipo', '')
+    fecha_inicio = request.GET.get('fecha_inicio', '')
+    fecha_fin = request.GET.get('fecha_fin', '')
 
-    return render(request, 'ausencias.html', {'ausencias': ausencia_list})
+    if user.role == 'admin':
+        queryset = Absence.objects.all()
+        branches = Branch.objects.all()
+    else:
+        branches = user.branch_set.all()
+        queryset = Absence.objects.filter(sucursal__in=branches)
+
+    if search:
+        queryset = queryset.filter(
+            Q(empleado__user__first_name__icontains=search) |
+            Q(empleado__user__last_name__icontains=search) |
+            Q(empleado__employee_number__icontains=search)
+        )
+    if sucursal_id:
+        queryset = queryset.filter(sucursal_id=sucursal_id)
+    if tipo:
+        queryset = queryset.filter(tipo=tipo)
+    if fecha_inicio:
+        queryset = queryset.filter(fecha__gte=fecha_inicio)
+    if fecha_fin:
+        queryset = queryset.filter(fecha__lte=fecha_fin)
+
+    ausencias = queryset.order_by('-fecha')[:50]
+
+    context = {
+        'ausencias': ausencias,
+        'branches': branches,
+        'search': search,
+        'selected_sucursal': int(sucursal_id) if sucursal_id else '',
+        'selected_tipo': tipo,
+        'fecha_inicio': fecha_inicio,
+        'fecha_fin': fecha_fin,
+        'types': Absence.TYPE_CHOICES
+    }
+
+    return render(request, 'ausencias.html', context)
+
+
+@login_required
+def registrar_ausencia(request):
+    if request.user.role not in ['admin', 'manager']:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = AbsenceForm(request.POST, user=request.user)
+        if form.is_valid():
+            ausencia = form.save(commit=False)
+            ausencia.registrado_por = request.user
+            ausencia.save()
+
+            AbsenceAudit.objects.create(
+                absence=ausencia,
+                action='create',
+                changed_by=request.user
+            )
+
+            messages.success(request, 'Ausencia registrada correctamente')
+            return redirect('ausencias')
+    else:
+        form = AbsenceForm(user=request.user)
+
+    return render(request, 'registrar_ausencia.html', {'form': form})
 
 
 @login_required
@@ -173,6 +249,71 @@ def reportes_view(request):
         return redirect('dashboard')
 
     return render(request, 'reportes.html')
+
+
+@login_required
+def exportar_vacaciones(request):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+
+    queryset = Employee.objects.all().order_by('branch', 'employee_number')
+    headers = ['No. Empleado', 'Nombre', 'Sucursal', 'Fecha Ingreso', 'Antigüedad (años)', 'Saldo Vacaciones']
+
+    def data_func(emp):
+        return [
+            emp.employee_number,
+            emp.user.get_full_name(),
+            emp.branch.name if emp.branch else "",
+            emp.fecha_ingreso,
+            emp.calcular_antiguedad(),
+            emp.saldo_vacaciones
+        ]
+
+    return generate_excel_report(queryset, "reporte_vacaciones", headers, data_func)
+
+
+@login_required
+def exportar_permisos(request):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+
+    queryset = Request.objects.filter(tipo='permiso').order_by('-created_at')
+    headers = ['ID', 'Empleado', 'Sucursal', 'Inicio', 'Fin', 'Estatus', 'Fuera de Cond.', 'Creado el']
+
+    def data_func(req):
+        return [
+            req.id,
+            req.empleado.user.get_full_name(),
+            req.empleado.branch.name if req.empleado.branch else "",
+            req.fecha_inicio,
+            req.fecha_fin,
+            req.get_estatus_display(),
+            "Sí" if req.fuera_de_condiciones else "No",
+            req.created_at.strftime('%Y-%m-%d %H:%M')
+        ]
+
+    return generate_excel_report(queryset, "reporte_permisos", headers, data_func)
+
+
+@login_required
+def exportar_ausencias(request):
+    if request.user.role != 'admin':
+        return redirect('dashboard')
+
+    queryset = Absence.objects.all().order_by('-fecha')
+    headers = ['Empleado', 'Sucursal', 'Fecha', 'Tipo', 'Motivo', 'Registrado por']
+
+    def data_func(abs_obj):
+        return [
+            abs_obj.empleado.user.get_full_name(),
+            abs_obj.sucursal.name if abs_obj.sucursal else "",
+            abs_obj.fecha,
+            abs_obj.get_tipo_display(),
+            abs_obj.motivo,
+            abs_obj.registrado_por.get_full_name() if abs_obj.registrado_por else ""
+        ]
+
+    return generate_excel_report(queryset, "reporte_ausencias", headers, data_func)
 
 
 @login_required

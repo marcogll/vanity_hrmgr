@@ -26,7 +26,7 @@
 | Fase 2 - Motor de Solicitudes (API REST) | ✅ Completado |
 | Fase 3 - Telegram Bot + API Key Auth | ✅ Completado |
 | Fase 4 - Dashboard Web | ✅ Completado |
-| Fase 5 - Inasistencias y Reportes | 🔄 En progreso |
+| Fase 5 - Inasistencias y Reportes | ✅ Completado |
 
 ---
 

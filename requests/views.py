@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from django.db.models import Q
 from .models import Request, RequestComment
 from .serializers import RequestSerializer, RequestCommentSerializer
+from core.permissions import IsAdminOrManager
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -34,6 +35,11 @@ class IsOwnerOrAdmin(permissions.BasePermission):
 class RequestViewSet(viewsets.ModelViewSet):
     serializer_class = RequestSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_permissions(self):
+        if self.action in ['aprobar', 'rechazar']:
+            return [IsAdminOrManager()]
+        return super().get_permissions()
 
     def get_queryset(self):
         user = self.request.user
