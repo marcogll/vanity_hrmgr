@@ -212,36 +212,36 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 
 ### 5.1 Registro de Inasistencias
 
-- [ ] 5.1.1 Crear formulario de registro de falta
-- [ ] 5.1.2 Validar que solo Manager/Admin puedan registrar
-- [ ] 5.1.3 Implementar selección de empleado por sucursal
-- [ ] 5.1.4 Guardar usuario responsable y timestamp
+- [x] 5.1.1 Crear formulario de registro de falta
+- [x] 5.1.2 Validar que solo Manager/Admin puedan registrar
+- [x] 5.1.3 Implementar selección de empleado por sucursal
+- [x] 5.1.4 Guardar usuario responsable y timestamp
 
 ### 5.2 Historial de Inasistencias
 
-- [ ] 5.1.5 Crear vista de historial por empleado
-- [ ] 5.1.6 Crear vista de historial por sucursal
-- [ ] 5.1.7 Implementar filtros por fecha y tipo
+- [x] 5.1.5 Crear vista de historial por empleado
+- [x] 5.1.6 Crear vista de historial por sucursal
+- [x] 5.1.7 Implementar filtros por fecha y tipo
 
 ### 5.3 Reportes
 
-- [ ] 5.3.1 Crear reporte de vacaciones por sucursal
-- [ ] 5.3.2 Crear reporte de permisos por periodo
-- [ ] 5.3.3 Crear reporte de inasistencias
-- [ ] 5.3.4 Implementar exportación a Excel/CSV
+- [x] 5.3.1 Crear reporte de vacaciones por sucursal
+- [x] 5.3.2 Crear reporte de permisos por periodo
+- [x] 5.3.3 Crear reporte de inasistencias
+- [x] 5.3.4 Implementar exportación a Excel/CSV
 
 ### 5.4 Métricas
 
-- [ ] 5.4.1 Dashboard de métricas operativas
-- [ ] 5.4.2 Gráficos de solicitudes por mes
-- [ ] 5.4.3 Gráficos de inasistencias por tipo
-- [ ] 5.4.4 Indicadores de aprobación/rechazo
+- [x] 5.4.1 Dashboard de métricas operativas
+- [x] 5.4.2 Gráficos de solicitudes por mes
+- [x] 5.4.3 Gráficos de inasistencias por tipo
+- [x] 5.4.4 Indicadores de aprobación/rechazo
 
 ### 5.5 Auditoría
 
-- [ ] 5.5.1 Crear log de todas las acciones críticas
-- [ ] 5.5.2 Implementar historial de cambios en solicitudes
-- [ ] 5.5.3 Crear vista de auditoría para Admin
+- [x] 5.5.1 Crear log de todas las acciones críticas
+- [x] 5.5.2 Implementar historial de cambios en solicitudes
+- [x] 5.5.3 Crear vista de auditoría para Admin
 
 ---
 

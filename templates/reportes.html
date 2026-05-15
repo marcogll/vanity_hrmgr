@@ -4,24 +4,24 @@
 <h2>Reportes</h2>
 <div class="row mt-4">
     <div class="col-md-4">
-        <div class="card p-3">
+        <div class="card p-3 shadow-sm h-100">
             <h5>Vacaciones por Sucursal</h5>
-            <p>Reporte de días de vacaciones por sucursal</p>
-            <button class="btn btn-primary">Generar</button>
+            <p class="text-muted">Reporte de días de vacaciones y antigüedad de todos los empleados.</p>
+            <a href="{% url 'exportar_vacaciones' %}" class="btn btn-primary mt-auto">Generar Excel</a>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
+        <div class="card p-3 shadow-sm h-100">
             <h5>Permisos por Periodo</h5>
-            <p>Reporte de permisos en rango de fechas</p>
-            <button class="btn btn-primary">Generar</button>
+            <p class="text-muted">Reporte de todos los permisos solicitados en el sistema.</p>
+            <a href="{% url 'exportar_permisos' %}" class="btn btn-primary mt-auto">Generar Excel</a>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card p-3">
+        <div class="card p-3 shadow-sm h-100">
             <h5>Inasistencias</h5>
-            <p>Reporte de inasistencias por tipo y sucursal</p>
-            <button class="btn btn-primary">Generar</button>
+            <p class="text-muted">Reporte completo de inasistencias registradas.</p>
+            <a href="{% url 'exportar_ausencias' %}" class="btn btn-primary mt-auto">Generar Excel</a>
         </div>
     </div>
 </div>

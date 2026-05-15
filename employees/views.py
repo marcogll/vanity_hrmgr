@@ -3,14 +3,15 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import User, Branch, Employee
 from .serializers import UserSerializer, BranchSerializer, EmployeeSerializer, EmployeeCreateSerializer
+from core.permissions import IsAdmin, IsAdminOrManager
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdmin]
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
@@ -38,7 +39,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class BranchViewSet(viewsets.ModelViewSet):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminOrManager]
 
     def get_queryset(self):
         user = self.request.user
@@ -58,7 +59,7 @@ class BranchViewSet(viewsets.ModelViewSet):
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAdminOrManager]
 
     def get_queryset(self):
         user = self.request.user
@@ -68,7 +69,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             return Employee.objects.filter(branch__in=user.branch_set.all())
         return Employee.objects.filter(user=user)
 
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
         try:
             employee = request.user.employee

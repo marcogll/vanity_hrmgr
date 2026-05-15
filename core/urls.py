@@ -7,9 +7,9 @@ from absences.views import AbsenceViewSet
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'branches', BranchViewSet)
-router.register(r'employees', EmployeeViewSet)
+router.register(r'employees', EmployeeViewSet, basename='employees')
 router.register(r'requests', RequestViewSet, basename='requests')
-router.register(r'absences', AbsenceViewSet)
+router.register(r'absences', AbsenceViewSet, basename='absences')
 
 urlpatterns = [
     path('', include(router.urls)),
