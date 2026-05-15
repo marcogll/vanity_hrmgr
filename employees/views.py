@@ -15,6 +15,25 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['post'])
+    def generate_api_key(self, request):
+        user = request.user
+        if user.role not in ['admin', 'manager']:
+            return Response({'error': 'Solo admin y manager pueden generar API keys'}, status=status.HTTP_403_FORBIDDEN)
+
+        from .authentication import generate_api_key
+        user.api_key = generate_api_key()
+        user.save()
+
+        return Response({'api_key': user.api_key, 'message': 'API Key generada correctamente'})
+
+    @action(detail=False, methods=['delete'])
+    def revoke_api_key(self, request):
+        user = request.user
+        user.api_key = None
+        user.save()
+        return Response({'message': 'API Key revocada'})
+
 
 class BranchViewSet(viewsets.ModelViewSet):
     queryset = Branch.objects.all()
