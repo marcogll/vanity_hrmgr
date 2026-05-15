@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - HR Manager{% endblock %}
+{% block content %}
+<h2>Dashboard</h2>
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Sucursales</h5>
+            <h2>{{ branches.count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Empleados Activos</h5>
+            <h2>{{ employees_count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Solicitudes Pendientes</h5>
+            <h2 class="text-warning">{{ solicitudes_pendientes.count }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Inasistencias (sem)</h5>
+            <h2 class="text-danger">{{ absences_week }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Solicitudes Pendientes</h5>
+            {% if solicitudes_pendientes %}
+            <table class="table">
+                <thead>
+                    <tr><th>Empleado</th><th>Tipo</th><th>Fechas</th><th>Acción</th></tr>
+                </thead>
+                <tbody>
+                    {% for s in solicitudes_pendientes %}
+                    <tr>
+                        <td>{{ s.empleado.user.get_full_name }}</td>
+                        <td>{{ s.get_tipo_display }}</td>
+                        <td>{{ s.fecha_inicio }} - {{ s.fecha_fin }}</td>
+                        <td><a href="{% url 'solicitudes_pendientes' %}" class="btn btn-sm btn-primary">Ver</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="text-muted">No hay solicitudes pendientes</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Calendario</h5>
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#calendar').fullCalendar({
+        locale: 'es',
+        header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek' },
+        events: '/api/requests/?format=json'
+    });
+});
+</script>
+{% endblock %}

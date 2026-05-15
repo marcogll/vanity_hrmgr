@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Solicitudes - HR Manager{% endblock %}
+{% block content %}
+<h2>Solicitudes</h2>
+<div class="mt-3 mb-4">
+    <a href="?status=pendiente" class="btn btn-sm btn-warning">Pendientes</a>
+    <a href="?status=aprobado" class="btn btn-sm btn-success">Aprobadas</a>
+    <a href="?status=rechazado" class="btn btn-sm btn-danger">Rechazadas</a>
+</div>
+<table class="table">
+    <thead><tr><th>#</th><th>Empleado</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Status</th></tr></thead>
+    <tbody>
+        {% for s in solicitudes %}
+        <tr class="status-{{ s.estatus }}">
+            <td>{{ s.id }}</td>
+            <td>{{ s.empleado.user.get_full_name }}</td>
+            <td>{{ s.get_tipo_display }}</td>
+            <td>{{ s.fecha_inicio }}</td>
+            <td>{{ s.fecha_fin }}</td>
+            <td>{{ s.dias_solicitados }}</td>
+            <td><span class="badge bg-{% if s.estatus == 'pendiente' %}warning{% elif s.estatus == 'aprobado' %}success{% else %}danger{% endif %}">{{ s.get_estatus_display }}</span></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

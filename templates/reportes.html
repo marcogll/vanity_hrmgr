@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Reportes - HR Manager{% endblock %}
+{% block content %}
+<h2>Reportes</h2>
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Vacaciones por Sucursal</h5>
+            <p>Reporte de días de vacaciones por sucursal</p>
+            <button class="btn btn-primary">Generar</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Permisos por Periodo</h5>
+            <p>Reporte de permisos en rango de fechas</p>
+            <button class="btn btn-primary">Generar</button>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Inasistencias</h5>
+            <p>Reporte de inasistencias por tipo y sucursal</p>
+            <button class="btn btn-primary">Generar</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

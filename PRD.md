@@ -178,55 +178,78 @@ Sección donde el empleado puede visualizar:
 
 ---
 
-## 8. Stack Tecnológico Sugerido
+## 8. Stack Tecnológico
 
 | Componente | Tecnología |
 |---|---|
-| Lenguaje | Python 3.11+ |
-| Framework Web | Django |
-| API | Django REST Framework |
-| Bot | python-telegram-bot |
-| Base de Datos | PostgreSQL |
-| Frontend | Django Templates o React |
+| Lenguaje | Python 3.14 |
+| Framework Web | Django 6.0 |
+| API | Django REST Framework + SimpleJWT |
+| Bot | python-telegram-bot 22 |
+| Base de Datos | PostgreSQL 15 |
+| Frontend | Django Templates + Bootstrap 5 + FullCalendar |
 | Tareas Asíncronas | Celery + Redis |
-| Autenticación | Django Auth + JWT |
+| Autenticación | Django Auth + JWT + API Key |
 | Infraestructura | Docker + Docker Compose |
 
 ---
 
 ## 9. Roadmap de Desarrollo
 
-### Fase 1 — Base de Datos y Modelos
+| Fase | Estado |
+|------|--------|
+| Fase 1 — Base de Datos y Modelos | ✅ Completado |
+| Fase 2 — Motor de Solicitudes | ✅ Completado |
+| Fase 3 — Telegram Bot + API Key | ✅ Completado |
+| Fase 4 — Dashboard Web | ✅ Completado |
+| Fase 5 — Inasistencias y Reportes | 🔄 En progreso |
 
-- Diseño ORM
-- Migraciones
-- Seeds iniciales
-- Reglas de antigüedad
+### Fase 1 — Base de Datos y Modelos ✅
 
-### Fase 2 — Motor de Solicitudes
+- Modelos: User, Branch, Employee, EmployeeAudit
+- Modelos: Holiday con seed de feriados mexicanos
+- Modelos: Request, RequestComment
+- Modelos: Absence, AbsenceAudit
+- Modelos: Configuration, NotificationLog
+- Señales para auditoría automática
+- Migraciones completas
 
-- CRUD de solicitudes
-- Validaciones automáticas
-- Cálculo de vacaciones
+### Fase 2 — Motor de Solicitudes ✅
 
-### Fase 3 — Telegram Bot
+- API REST completa con DRF
+- Serializers con validaciones LFT Art. 76
+- Cálculo de vacaciones por antigüedad
+- Validación de permisos (máx 3 días, anticipación)
+- Bandera "FUERA DE CONDICIONES"
+- Endpoints aprobar/rechazar
+- Autenticación JWT
 
-- Integración bot
-- Aprobaciones inline
-- Notificaciones automáticas
+### Fase 3 — Telegram Bot + API Key ✅
 
-### Fase 4 — Dashboard Web
+- Bot con python-telegram-bot
+- Notificaciones inline con botones Aprobar/Rechazar
+- Handler de comentarios administrativos
+- Notificación automática al colaborador
+- Autenticación por API Key para integraciones
+- Endpoints generate/revoke API Key
 
-- Calendario
-- Panel administrativo
-- Búsqueda global
+### Fase 4 — Dashboard Web ✅
 
-### Fase 5 — Inasistencias y Reportes
+- Templates con Bootstrap 5
+- Login/Logout
+- Dashboard Admin con métricas
+- Panel de aprobación rápida
+- Vista de empleados con búsqueda
+- Historial de solicitudes
+- Formulario de nueva solicitud
+- Calendario con FullCalendar
+
+### Fase 5 — Inasistencias y Reportes 🔄
 
 - Registro de faltas
-- Exportación
-- Métricas
-- Auditoría
+- Exportación Excel/CSV
+- Métricas operativas
+- Auditoría completa
 
 ---
 

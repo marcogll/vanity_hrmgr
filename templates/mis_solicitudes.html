@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Mis Solicitudes - HR Manager{% endblock %}
+{% block content %}
+<h2>Mis Solicitudes</h2>
+<table class="table mt-4">
+    <thead><tr><th>#</th><th>Tipo</th><th>Inicio</th><th>Fin</th><th>Días</th><th>Status</th><th>Comentario Admin</th></tr></thead>
+    <tbody>
+        {% for s in solicitudes %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td>{{ s.get_tipo_display }}</td>
+            <td>{{ s.fecha_inicio }}</td>
+            <td>{{ s.fecha_fin }}</td>
+            <td>{{ s.dias_solicitados }}</td>
+            <td><span class="badge bg-{% if s.estatus == 'pendiente' %}warning{% elif s.estatus == 'aprobado' %}success{% else %}danger{% endif %}">{{ s.get_estatus_display }}</span></td>
+            <td>{{ s.comentario_admin }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

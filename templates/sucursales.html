@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Sucursales - HR Manager{% endblock %}
+{% block content %}
+<h2>Sucursales</h2>
+<div class="row mt-4">
+    {% for s in sucursales %}
+    <div class="col-md-4 mb-3">
+        <div class="card p-3">
+            <h5>{{ s.name }}</h5>
+            <p>{{ s.address }}</p>
+            <span class="badge bg-{% if s.active %}success{% else %}danger{% endif %}">{{ s.active|yesno:"Activa,Inactiva" }}</span>
+            <p class="mt-2">Empleados: {{ s.employees.count }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

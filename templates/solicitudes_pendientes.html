@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Solicitudes Pendientes - HR Manager{% endblock %}
+{% block content %}
+<h2>Aprobación Rápida</h2>
+<div class="row mt-4">
+    {% for s in solicitudes %}
+    <div class="col-md-6 mb-3">
+        <div class="card p-3">
+            <h5>{{ s.empleado.user.get_full_name }} - {{ s.get_tipo_display }}</h5>
+            <p>{{ s.fecha_inicio }} → {{ s.fecha_fin }} ({{ s.dias_solicitados }} días)</p>
+            {% if s.fuera_de_condiciones %}
+            <div class="alert alert-warning py-1">⚠️ FUERA DE CONDICIONES / RIESGO DE ABANDONO</div>
+            {% endif %}
+            <form method="post" class="d-flex gap-2">
+                {% csrf_token %}
+                <input type="hidden" name="request_id" value="{{ s.id }}">
+                <input type="text" name="comentario" class="form-control form-control-sm" placeholder="Comentario">
+                <button name="action" value="approve" class="btn btn-sm btn-success">Aprobar</button>
+                <button name="action" value="reject" class="btn btn-sm btn-danger">Rechazar</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No hay solicitudes pendientes</p>
+    {% endfor %}
+</div>
+{% endblock %}

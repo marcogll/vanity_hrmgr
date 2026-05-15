@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Empleados - HR Manager{% endblock %}
+{% block content %}
+<h2>Empleados</h2>
+<form class="mt-3 mb-4">
+    <div class="input-group">
+        <input type="text" name="search" class="form-control" placeholder="Buscar por nombre, número, CURP..." value="{{ search }}">
+        <button class="btn btn-primary" type="submit">Buscar</button>
+    </div>
+</form>
+<table class="table table-striped">
+    <thead><tr><th>No.</th><th>Nombre</th><th>Sucursal</th><th>Contrato</th><th>Status</th><th>Saldo Vac.</th></tr></thead>
+    <tbody>
+        {% for e in empleados %}
+        <tr>
+            <td>{{ e.employee_number }}</td>
+            <td>{{ e.user.get_full_name }}</td>
+            <td>{{ e.branch }}</td>
+            <td>{{ e.get_tipo_contrato_display }}</td>
+            <td><span class="badge bg-{% if e.status == 'activo' %}success{% elif e.status == 'baja' %}danger{% else %}warning{% endif %}">{{ e.get_status_display }}</span></td>
+            <td>{{ e.saldo_vacaciones }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

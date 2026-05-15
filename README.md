@@ -10,7 +10,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python_3.11+-3a3a3a?style=flat-square&logo=python&logoColor=white" alt="Python 3.11+">
-  <img src="https://img.shields.io/badge/Django-3a3a3a?style=flat-square&logo=django&logoColor=white" alt="Django">
+  <img src="https://img.shields.io/badge/Django_6.0-3a3a3a?style=flat-square&logo=django&logoColor=white" alt="Django">
   <img src="https://img.shields.io/badge/PostgreSQL-3a3a3a?style=flat-square&logo=postgresql&logoColor=white" alt="PostgreSQL">
   <img src="https://img.shields.io/badge/Docker-3a3a3a?style=flat-square&logo=docker&logoColor=white" alt="Docker">
   <img src="https://img.shields.io/badge/Telegram-3a3a3a?style=flat-square&logo=telegram&logoColor=white" alt="Telegram">
@@ -18,22 +18,29 @@
 
 ---
 
-# Características Principales
+# Estado del Proyecto
 
-- Gestión de vacaciones basada en antigüedad.
-- Control de permisos con validaciones automáticas.
-- Registro administrativo de inasistencias.
-- Integración con Telegram Bot.
-- Dashboard multi-sucursal.
-- Sistema de roles y permisos.
-- Auditoría de movimientos y solicitudes.
-- Arquitectura preparada para escalamiento.
+| Fase | Estado |
+|------|--------|
+| Fase 1 - Base de Datos y Modelos | ✅ Completado |
+| Fase 2 - Motor de Solicitudes (API REST) | ✅ Completado |
+| Fase 3 - Telegram Bot + API Key Auth | ✅ Completado |
+| Fase 4 - Dashboard Web | ✅ Completado |
+| Fase 5 - Inasistencias y Reportes | 🔄 En progreso |
 
 ---
 
-# Objetivo
+# Características Principales
 
-Automatizar los procesos operativos relacionados con recursos humanos y administración de personal, reduciendo tiempos de respuesta y centralizando la información en una sola plataforma.
+- Gestión de vacaciones basada en antigüedad (LFT Art. 76)
+- Control de permisos con validaciones automáticas
+- Registro administrativo de inasistencias
+- Integración con Telegram Bot para aprobaciones
+- Dashboard web multi-sucursal con Bootstrap
+- Sistema de roles: Admin, Manager, User
+- Autenticación JWT + API Key + Sesión
+- Auditoría completa de movimientos
+- API REST con Django REST Framework
 
 ---
 
@@ -41,38 +48,57 @@ Automatizar los procesos operativos relacionados con recursos humanos y administ
 
 | Rol | Funciones |
 |---|---|
-| Admin | Control total del sistema y aprobaciones |
-| Manager | Gestión operativa por sucursal |
+| Admin | Control total, aprobaciones, reportes, configuración |
+| Manager | Gestión operativa por sucursal asignada |
 | User | Solicitud y consulta de permisos/vacaciones |
 
 ---
 
-# Funcionalidades
+# Autenticación
 
-## Vacaciones
+El sistema soporta tres métodos de autenticación:
 
-- Cálculo automático por antigüedad.
-- Renovación automática en aniversario laboral.
-- Exclusión automática de días festivos.
-- Validación de saldo disponible.
+| Método | Uso |
+|---|---|
+| JWT Bearer | APIs REST (acceso con username/password) |
+| API Key | Integraciones machine-to-machine |
+| Sesión | Dashboard web |
 
-## Permisos
+## Generar API Key
 
-- Validación de máximo de días permitidos.
-- Reglas de anticipación.
-- Etiquetado automático de riesgos administrativos.
+```bash
+POST /api/users/generate_api_key/
+Authorization: Bearer <jwt_token>
 
-## Telegram Bot
+# Respuesta:
+{ "api_key": "sk_..." }
+```
 
-- Notificaciones instantáneas.
-- Aprobación/Rechazo inline.
-- Comentarios administrativos sincronizados.
+## Usar API Key
 
-## Inasistencias
+```bash
+GET /api/requests/
+Authorization: ApiKey <tu_api_key>
+```
 
-- Registro de faltas e incidencias.
-- Clasificación por tipo.
-- Historial administrativo.
+---
+
+# API Endpoints
+
+| Endpoint | Método | Descripción |
+|---|---|---|
+| `/api/users/` | GET, POST | Gestión de usuarios |
+| `/api/users/me/` | GET | Datos del usuario actual |
+| `/api/users/generate_api_key/` | POST | Generar API Key |
+| `/api/users/revoke_api_key/` | DELETE | Revocar API Key |
+| `/api/branches/` | GET | Sucursales |
+| `/api/branches/{id}/empleados/` | GET | Empleados de sucursal |
+| `/api/employees/` | GET, POST | Empleados |
+| `/api/employees/me/` | GET | Datos propios |
+| `/api/requests/` | GET, POST | Solicitudes |
+| `/api/requests/{id}/aprobar/` | POST | Aprobar solicitud |
+| `/api/requests/{id}/rechazar/` | POST | Rechazar solicitud |
+| `/api/absences/` | GET, POST | Inasistencias |
 
 ---
 
@@ -80,125 +106,32 @@ Automatizar los procesos operativos relacionados con recursos humanos y administ
 
 | Área | Tecnología |
 |---|---|
-| Backend | Python 3.11+ |
-| Framework | Django |
-| API | Django REST Framework |
-| Base de Datos | PostgreSQL |
-| Bot | python-telegram-bot |
-| Queue/Tasks | Celery + Redis |
-| Infraestructura | Docker |
-| Frontend | Django Templates / React |
+| Backend | Python 3.14 / Django 6.0 |
+| API | Django REST Framework + SimpleJWT |
+| Base de Datos | PostgreSQL 15 |
+| Cache/Queue | Redis 7 + Celery |
+| Bot | python-telegram-bot 22 |
+| Web | Django Templates + Bootstrap 5 + FullCalendar |
+| Infraestructura | Docker + Docker Compose |
 
 ---
 
-# Arquitectura General
-
-```text
-Frontend
-   │
-   ▼
-Django API
-   │
-   ├── PostgreSQL
-   ├── Redis
-   ├── Celery Workers
-   └── Telegram Bot
-```
-
----
-
-# Estructura del Proyecto
-
-```text
-project/
-├── apps/
-│   ├── employees/
-│   ├── requests/
-│   ├── absences/
-│   ├── holidays/
-│   └── telegram_bot/
-├── config/
-├── requirements/
-├── docker/
-├── scripts/
-├── manage.py
-└── README.md
-```
-
----
-
-# Variables de Entorno
-
-```env
-DEBUG=True
-
-SECRET_KEY=your_secret_key
-
-DB_NAME=app_db
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
-
-REDIS_URL=redis://redis:6379/0
-
-TELEGRAM_BOT_TOKEN=your_bot_token
-
-ALLOWED_HOSTS=*
-```
-
----
-
-# Instalación Local
-
-## 1. Clonar repositorio
+# Instalación Rápida
 
 ```bash
-git clone https://github.com/your-org/project.git
-cd project
-```
-
-## 2. Crear entorno virtual
-
-```bash
-python -m venv venv
-```
-
-## 3. Activar entorno
-
-### Linux/macOS
-
-```bash
-source venv/bin/activate
-```
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
-## 4. Instalar dependencias
-
-```bash
+# 1. Clonar y configurar
+git clone https://github.com/marcogll/vanity_hrmgr.git
+cd vanity_hrmgr
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-```
+cp .env.example .env
 
-## 5. Ejecutar migraciones
-
-```bash
+# 2. Migrar y seed
 python manage.py migrate
-```
-
-## 6. Crear superusuario
-
-```bash
+python manage.py seed_holidays
 python manage.py createsuperuser
-```
 
-## 7. Iniciar servidor
-
-```bash
+# 3. Ejecutar
 python manage.py runserver
 ```
 
@@ -206,82 +139,42 @@ python manage.py runserver
 
 # Docker
 
-## Levantar servicios
-
 ```bash
 docker compose up --build
-```
-
-## Ejecutar migraciones
-
-```bash
 docker compose exec web python manage.py migrate
-```
-
-## Crear superusuario
-
-```bash
+docker compose exec web python manage.py seed_holidays
 docker compose exec web python manage.py createsuperuser
 ```
 
 ---
 
-# Roadmap
+# Estructura del Proyecto
 
-## Fase 1
-
-- Modelos ORM
-- Sistema de usuarios
-- Roles y permisos
-
-## Fase 2
-
-- Motor de solicitudes
-- Validaciones automáticas
-- Lógica de vacaciones
-
-## Fase 3
-
-- Integración Telegram
-- Workflow de aprobaciones
-
-## Fase 4
-
-- Dashboard administrativo
-- Calendario maestro
-
-## Fase 5
-
-- Reportes
-- Exportaciones
-- Métricas operativas
+```text
+vanity_hrmgr/
+├── config/              # Django settings
+├── core/                # Catálogos y URLs API
+├── employees/           # Users, Branches, Employees
+├── holidays/            # Feriados mexicanos
+├── requests/            # Solicitudes vacaciones/permisos
+├── absences/            # Inasistencias
+├── telegram_bot/        # Bot de Telegram
+├── templates/           # Templates web
+├── static/              # Archivos estáticos
+├── manage.py
+├── docker-compose.yml
+├── Dockerfile
+└── requirements.txt
+```
 
 ---
 
-# Seguridad
+# Variables de Entorno
 
-- Roles RBAC.
-- Validaciones server-side.
-- Auditoría de acciones.
-- Protección CSRF.
-- JWT/Auth Session.
-- Logs administrativos.
-
----
-
-# Futuras Expansiones
-
-- Multiempresa.
-- Firma digital.
-- Aplicación móvil.
-- Integración biométrica.
-- Nómina.
-- Reportes PDF/Excel.
-- Integración SAT/IMSS.
+Ver `.env.example` para referencia completa.
 
 ---
 
 # Licencia
 
-Uso privado y propietario.
-Todos los derechos reservados.
+Uso privado y propietario. Todos los derechos reservados.

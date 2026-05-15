@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Nueva Solicitud - HR Manager{% endblock %}
+{% block content %}
+<h2>Nueva Solicitud</h2>
+<div class="card p-4 mt-4" style="max-width: 600px">
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Tipo</label>
+            <select name="tipo" class="form-select">
+                <option value="vacacion">Vacación</option>
+                <option value="permiso">Permiso</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Fecha Inicio</label>
+            <input type="date" name="fecha_inicio" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Fecha Fin</label>
+            <input type="date" name="fecha_fin" class="form-control" required>
+        </div>
+        <div class="form-check mb-3">
+            <input type="checkbox" name="fuera_de_condiciones" class="form-check-input" id="fuera">
+            <label class="form-check-label" for="fuera">Enviar fuera de condiciones (requiere justificación)</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+    </form>
+</div>
+{% endblock %}
