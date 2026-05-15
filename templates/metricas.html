@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block title %}Métricas - HR Manager{% endblock %}
+{% block content %}
+<h2>Métricas Operativas</h2>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <h5>Tasa de Aprobación</h5>
+            <h1 class="text-success">{{ tasa_aprobacion }}%</h1>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <h5>Tasa de Rechazo</h5>
+            <h1 class="text-danger">{{ tasa_rechazo }}%</h1>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3 text-center">
+            <h5>Solicitudes Pendientes</h5>
+            <h1 class="text-warning">{{ solicitudes_estatus.pendiente }}</h1>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h5>Solicitudes por Mes (últimos 12 meses)</h5>
+            <canvas id="requestsChart" height="100"></canvas>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Inasistencias por Tipo</h5>
+            <canvas id="absencesChart" height="200"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Distribución de Estatus</h5>
+            <canvas id="statusChart" height="150"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-3">
+            <h5>Inasistencias por Mes</h5>
+            <canvas id="absencesMonthChart" height="150"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const months = {{ months|safe }};
+const requestsData = {{ requests_by_month|safe }};
+const absencesData = {{ absences_by_month|safe }};
+
+new Chart(document.getElementById('requestsChart'), {
+    type: 'line',
+    data: {
+        labels: months,
+        datasets: [{
+            label: 'Solicitudes',
+            data: requestsData,
+            borderColor: '#3498db',
+            backgroundColor: 'rgba(52,152,219,0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+
+const absenceTypes = {{ ausencias_por_tipo|safe }};
+new Chart(document.getElementById('absencesChart'), {
+    type: 'doughnut',
+    data: {
+        labels: Object.keys(absenceTypes),
+        datasets: [{
+            data: Object.values(absenceTypes),
+            backgroundColor: ['#e74c3c', '#3498db', '#f39c12', '#9b59b6', '#2ecc71', '#95a5a6']
+        }]
+    }
+});
+
+new Chart(document.getElementById('statusChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Pendiente', 'Aprobado', 'Rechazado'],
+        datasets: [{
+            data: [{{ solicitudes_estatus.pendiente }}, {{ solicitudes_estatus.aprobado }}, {{ solicitudes_estatus.rechazado }}],
+            backgroundColor: ['#f39c12', '#2ecc71', '#e74c3c']
+        }]
+    }
+});
+
+new Chart(document.getElementById('absencesMonthChart'), {
+    type: 'bar',
+    data: {
+        labels: months,
+        datasets: [{
+            label: 'Inasistencias',
+            data: absencesData,
+            backgroundColor: '#e74c3c'
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}

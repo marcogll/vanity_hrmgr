@@ -34,6 +34,8 @@
                     <a href="{% url 'solicitudes' %}">Solicitudes</a>
                     <a href="{% url 'ausencias' %}">Inasistencias</a>
                     <a href="{% url 'sucursales' %}">Sucursales</a>
+                    <a href="{% url 'metricas' %}">Métricas</a>
+                    <a href="{% url 'auditoria' %}">Auditoría</a>
                     <a href="{% url 'reportes' %}">Reportes</a>
                     {% elif user.role == 'manager' %}
                     <a href="{% url 'dashboard' %}">Dashboard</a>

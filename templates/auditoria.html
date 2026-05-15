@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Auditoría - HR Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center">
+    <h2>Panel de Auditoría</h2>
+</div>
+
+<form class="mt-3 mb-4 row g-2">
+    <div class="col-md-3">
+        <select name="action" class="form-select">
+            <option value="">Todas las acciones</option>
+            {% for val, label in actions %}
+            <option value="{{ val }}" {% if val == action_filter %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="fecha_inicio" class="form-control" value="{{ fecha_inicio }}">
+    </div>
+    <div class="col-md-2">
+        <input type="date" name="fecha_fin" class="form-control" value="{{ fecha_fin }}">
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary w-100" type="submit">Filtrar</button>
+    </div>
+</form>
+
+<div class="card p-3">
+    <table class="table table-sm">
+        <thead><tr><th>Fecha</th><th>Tipo</th><th>Acción</th><th>Detalle</th><th>Usuario</th></tr></thead>
+        <tbody>
+            {% for audit in audits %}
+            <tr>
+                <td>{{ audit.created_at|date:"d/m/Y H:i" }}</td>
+                <td>
+                    {% if audit.field_changed == 'saldo_vacaciones' or audit.field_changed == 'status' %}
+                    <span class="badge bg-info">Empleado</span>
+                    {% else %}
+                    <span class="badge bg-warning">Ausencia</span>
+                    {% endif %}
+                </td>
+                <td>{{ audit.get_action_display }}</td>
+                <td>
+                    {% if audit.field_changed %}
+                    {{ audit.field_changed }}: {{ audit.old_value }} → {{ audit.new_value }}
+                    {% else %}
+                    {{ audit.action }}
+                    {% endif %}
+                </td>
+                <td>{{ audit.changed_by.get_full_name|default:"Sistema" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center text-muted">No hay registros de auditoría</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

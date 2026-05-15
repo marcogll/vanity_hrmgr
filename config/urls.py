@@ -19,6 +19,7 @@ from core.web_views import (
     mi_perfil, mis_solicitudes, nueva_solicitud
 )
 from telegram_bot.views import webhook
+from core.report_views import auditoria_view, metricas_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -40,6 +41,8 @@ urlpatterns = [
     path('mis-solicitudes/', mis_solicitudes, name='mis_solicitudes'),
     path('nueva-solicitud/', nueva_solicitud, name='nueva_solicitud'),
     path('telegram/webhook/', webhook, name='telegram_webhook'),
+    path('auditoria/', auditoria_view, name='auditoria'),
+    path('metricas/', metricas_view, name='metricas'),
 ]
 
 if settings.DEBUG:

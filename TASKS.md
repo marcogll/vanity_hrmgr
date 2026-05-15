@@ -234,15 +234,15 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 ### 5.4 Métricas
 
 - [x] 5.4.1 Dashboard de métricas operativas
-- [ ] 5.4.2 Gráficos de solicitudes por mes
-- [ ] 5.4.3 Gráficos de inasistencias por tipo
-- [ ] 5.4.4 Indicadores de aprobación/rechazo
+- [x] 5.4.2 Gráficos de solicitudes por mes
+- [x] 5.4.3 Gráficos de inasistencias por tipo
+- [x] 5.4.4 Indicadores de aprobación/rechazo
 
 ### 5.5 Auditoría
 
 - [x] 5.5.1 Crear log de todas las acciones críticas
-- [ ] 5.5.2 Implementar historial de cambios en solicitudes
-- [ ] 5.5.3 Crear vista de auditoría para Admin
+- [x] 5.5.2 Implementar historial de cambios en solicitudes
+- [x] 5.5.3 Crear vista de auditoría para Admin
 
 ---
 
@@ -314,6 +314,6 @@ Fase 4 → Fase 5
 | Fase 2 | 22/22 | 22 | 100% |
 | Fase 3 | 16/16 | 16 | 100% |
 | Fase 4 | 21/21 | 21 | 100% |
-| Fase 5 | 10/15 | 15 | 67% |
+| Fase 5 | 15/15 | 15 | 100% |
 | Transversales | 3/14 | 14 | 21% |
-| **TOTAL** | **92/108** | **108** | **85%** |
+| **TOTAL** | **97/108** | **108** | **90%** |
