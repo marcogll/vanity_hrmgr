@@ -96,7 +96,7 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 - [x] 2.2.2 Validar anticipación de 24-48 horas
 - [x] 2.2.3 Implementar etiqueta "FUERA DE CONDICIONES / RIESGO DE ABANDONO"
 - [x] 2.2.4 Permitir envío con bandera cuando rompe reglas
-- [ ] 2.2.5 Validar que no haya traslapes de solicitudes
+- [x] 2.2.5 Validar que no haya traslapes de solicitudes
 
 ### 2.3 API REST - Endpoints
 
@@ -114,7 +114,7 @@ El proyecto se divide en 5 fases principales, cada una con tareas específicas q
 - [x] 2.3.4 Crear endpoints para Sucursales:
   - GET /api/branches/
   - GET /api/branches/{id}/employees/
-- [ ] 2.3.5 Crear endpoint de dashboard para Admin/Manager
+- [x] 2.3.5 Crear endpoint de dashboard para Admin/Manager
 
 ### 2.4 Serializer y Validaciones
 
@@ -311,9 +311,9 @@ Fase 4 → Fase 5
 | Fase | Completadas | Totales | % |
 |------|-------------|---------|---|
 | Fase 1 | 20/20 | 20 | 100% |
-| Fase 2 | 20/22 | 22 | 91% |
+| Fase 2 | 22/22 | 22 | 100% |
 | Fase 3 | 12/16 | 16 | 75% |
 | Fase 4 | 20/21 | 21 | 95% |
 | Fase 5 | 10/15 | 15 | 67% |
 | Transversales | 3/14 | 14 | 21% |
-| **TOTAL** | **85/108** | **108** | **79%** |
+| **TOTAL** | **87/108** | **108** | **81%** |

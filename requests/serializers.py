@@ -28,13 +28,29 @@ class RequestSerializer(serializers.ModelSerializer):
         read_only_fields = ['estatus', 'observaciones_sistema', 'comentario_admin', 'created_at', 'updated_at']
 
     def validate(self, data):
-        """Valida reglas de negocio según tipo de solicitud."""
+        """Valida reglas de negocio según tipo de solicitud.
+
+        Valida:
+        - Fechas coherentes (inicio <= fin)
+        - Saldo suficiente para vacaciones
+        - Máximo 3 días hábiles para permisos
+        - Anticipación mínima de 24h para permisos
+        - No hay traslapes con solicitudes existentes
+        - Bandera fuera_de_condiciones permite saltar validaciones
+        """
         if data['fecha_inicio'] > data['fecha_fin']:
             raise serializers.ValidationError("La fecha de inicio no puede ser posterior a la fecha fin")
 
+        empleado = data['empleado']
+
+        # Validar traslapes con solicitudes existentes del mismo empleado
+        if not self._validar_traslapes(empleado, data['fecha_inicio'], data['fecha_fin']):
+            raise serializers.ValidationError(
+                "Ya existe una solicitud que se traslapa con las fechas seleccionadas"
+            )
+
         if data['tipo'] == 'vacacion':
             dias = self._calcular_dias_habiles(data['fecha_inicio'], data['fecha_fin'])
-            empleado = data['empleado']
             if not self.instance:
                 if dias > empleado.saldo_vacaciones:
                     if not data.get('fuera_de_condiciones', False):
@@ -58,6 +74,32 @@ class RequestSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Los permisos deben solicitarse con al menos 24 horas de anticipación")
 
         return data
+
+    def _validar_traslapes(self, empleado, fecha_inicio, fecha_fin):
+        """Verifica que no existan solicitudes pendientes o aprobadas que se traslapen.
+
+        Args:
+            empleado: Instancia de Employee
+            fecha_inicio: Fecha de inicio de la nueva solicitud
+            fecha_fin: Fecha de fin de la nueva solicitud
+
+        Returns:
+            True si no hay traslapes, False si existe conflicto
+        """
+        queryset = Request.objects.filter(
+            empleado=empleado,
+            estatus__in=['pendiente', 'aprobado']
+        )
+
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        traslapes = queryset.filter(
+            fecha_inicio__lte=fecha_fin,
+            fecha_fin__gte=fecha_inicio
+        )
+
+        return not traslapes.exists()
 
     def _calcular_dias_habiles(self, fecha_inicio, fecha_fin):
         """Calcula días hábiles excluyendo fines de semana y feriados."""
