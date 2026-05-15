@@ -1,14 +1,25 @@
+"""Autenticación por API Key para integraciones machine-to-machine."""
+
+import secrets
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
-from django.utils import timezone
-import secrets
 from .models import User
 
 
 class APIKeyAuthentication(BaseAuthentication):
+    """Autenticador que valida API Keys en el header Authorization."""
     keyword = 'ApiKey'
 
     def authenticate(self, request):
+        """Extrae y valida la API Key del header Authorization.
+
+        Returns:
+            tuple: (user, None) si la key es válida
+            None: si no hay header o no coincide el keyword
+
+        Raises:
+            AuthenticationFailed: si la key es inválida o el usuario está inactivo
+        """
         auth_header = request.META.get('HTTP_AUTHORIZATION', '')
 
         if not auth_header:
@@ -39,4 +50,5 @@ class APIKeyAuthentication(BaseAuthentication):
 
 
 def generate_api_key():
+    """Genera una API Key criptográficamente segura de 32 bytes."""
     return secrets.token_urlsafe(32)

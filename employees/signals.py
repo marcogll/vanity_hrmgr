@@ -1,11 +1,13 @@
+"""Señales para auditoría automática y renovación de vacaciones en aniversario."""
+
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.utils import timezone
 from .models import Employee, EmployeeAudit
 
 
 @receiver(pre_save, sender=Employee)
 def employee_pre_save(sender, instance, **kwargs):
+    """Guarda valores anteriores para detectar cambios en status y saldo."""
     if instance.pk:
         try:
             old = Employee.objects.get(pk=instance.pk)
@@ -17,6 +19,7 @@ def employee_pre_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Employee)
 def employee_post_save(sender, instance, created, **kwargs):
+    """Crea registros de auditoría cuando se crea o modifica un empleado."""
     user = getattr(instance, '_changed_by', None)
     if created:
         EmployeeAudit.objects.create(
@@ -46,6 +49,7 @@ def employee_post_save(sender, instance, created, **kwargs):
 
 
 def actualizar_saldo_aniversario():
+    """Renueva el saldo de vacaciones en la fecha de aniversario de cada empleado activo."""
     from datetime import date
     today = date.today()
     employees = Employee.objects.filter(status='activo')

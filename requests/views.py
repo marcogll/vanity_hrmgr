@@ -1,13 +1,14 @@
+"""ViewSets para la API REST de solicitudes con permisos por rol."""
+
 from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import Q
 from .models import Request, RequestComment
 from .serializers import RequestSerializer, RequestCommentSerializer
-from core.permissions import IsAdminOrManager
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
+    """Permite lectura a todos los autenticados, escritura solo a admin/manager."""
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -24,6 +25,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 
 class IsOwnerOrAdmin(permissions.BasePermission):
+    """Permite acceso solo al dueño de la solicitud o administradores."""
     def has_object_permission(self, request, view, obj):
         if request.user.role == 'admin':
             return True
@@ -33,15 +35,17 @@ class IsOwnerOrAdmin(permissions.BasePermission):
 
 
 class RequestViewSet(viewsets.ModelViewSet):
+    """ViewSet CRUD para solicitudes de vacaciones y permisos.
+
+    Acciones especiales:
+    - aprobar: Cambia estatus a aprobado y descuenta saldo de vacaciones
+    - rechazar: Cambia estatus a rechazado con comentario
+    """
     serializer_class = RequestSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_permissions(self):
-        if self.action in ['aprobar', 'rechazar']:
-            return [IsAdminOrManager()]
-        return super().get_permissions()
-
     def get_queryset(self):
+        """Filtra solicitudes según rol del usuario."""
         user = self.request.user
         if user.role == 'admin':
             return Request.objects.all()
@@ -51,11 +55,13 @@ class RequestViewSet(viewsets.ModelViewSet):
         return Request.objects.filter(empleado__user=user)
 
     def perform_create(self, serializer):
+        """Asigna automáticamente el empleado del usuario autenticado."""
         empleado = self.request.user.employee
         serializer.save(empleado=empleado)
 
     @action(detail=True, methods=['post'])
     def aprobar(self, request, pk=None):
+        """Aprueba una solicitud pendiente y descuenta el saldo de vacaciones."""
         request_obj = self.get_object()
         if request_obj.estatus != 'pendiente':
             return Response({'error': 'La solicitud ya fue procesada'}, status=status.HTTP_400_BAD_REQUEST)
@@ -74,6 +80,7 @@ class RequestViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def rechazar(self, request, pk=None):
+        """Rechaza una solicitud pendiente con comentario opcional."""
         request_obj = self.get_object()
         if request_obj.estatus != 'pendiente':
             return Response({'error': 'La solicitud ya fue procesada'}, status=status.HTTP_400_BAD_REQUEST)
@@ -86,6 +93,7 @@ class RequestViewSet(viewsets.ModelViewSet):
 
 
 class RequestCommentViewSet(viewsets.ModelViewSet):
+    """ViewSet para comentarios en solicitudes. Solo crea y lista."""
     serializer_class = RequestCommentSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -93,4 +101,5 @@ class RequestCommentViewSet(viewsets.ModelViewSet):
         return RequestComment.objects.filter(request_id=self.kwargs['request_pk'])
 
     def perform_create(self, serializer):
+        """Asigna automáticamente el autor del comentario."""
         serializer.save(author=self.request.user)

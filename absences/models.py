@@ -1,8 +1,11 @@
+"""Modelos para registro de inasistencias y su auditoría."""
+
 from django.db import models
 from employees.models import Employee, Branch, User
 
 
 class Absence(models.Model):
+    """Registro de una inasistencia o incidencia laboral."""
     TYPE_CHOICES = [
         ('injustificada', 'Injustificada'),
         ('enfermedad', 'Enfermedad'),
@@ -29,6 +32,7 @@ class Absence(models.Model):
 
 
 class AbsenceAudit(models.Model):
+    """Registro de auditoría para cambios en inasistencias."""
     ACTION_CHOICES = [
         ('create', 'Creado'),
         ('update', 'Actualizado'),

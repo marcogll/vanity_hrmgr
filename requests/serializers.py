@@ -1,3 +1,5 @@
+"""Serializers para la API REST de solicitudes con validaciones de negocio."""
+
 from rest_framework import serializers
 from .models import Request, RequestComment
 from employees.models import Employee
@@ -5,6 +7,15 @@ from datetime import date, timedelta
 
 
 class RequestSerializer(serializers.ModelSerializer):
+    """Serializer para solicitudes de vacaciones y permisos.
+
+    Valida:
+    - Fechas coherentes (inicio <= fin)
+    - Saldo suficiente para vacaciones
+    - Máximo 3 días hábiles para permisos
+    - Anticipación mínima de 24h para permisos
+    - Bandera fuera_de_condiciones permite saltar validaciones
+    """
     empleado_nombre = serializers.CharField(source='empleado.user.get_full_name', read_only=True)
     dias_solicitados = serializers.IntegerField(read_only=True)
     saldo_vacaciones = serializers.FloatField(source='empleado.saldo_vacaciones', read_only=True)
@@ -17,6 +28,7 @@ class RequestSerializer(serializers.ModelSerializer):
         read_only_fields = ['estatus', 'observaciones_sistema', 'comentario_admin', 'created_at', 'updated_at']
 
     def validate(self, data):
+        """Valida reglas de negocio según tipo de solicitud."""
         if data['fecha_inicio'] > data['fecha_fin']:
             raise serializers.ValidationError("La fecha de inicio no puede ser posterior a la fecha fin")
 
@@ -48,6 +60,7 @@ class RequestSerializer(serializers.ModelSerializer):
         return data
 
     def _calcular_dias_habiles(self, fecha_inicio, fecha_fin):
+        """Calcula días hábiles excluyendo fines de semana y feriados."""
         from holidays.models import Holiday
         dias = 0
         actual = fecha_inicio
@@ -59,6 +72,7 @@ class RequestSerializer(serializers.ModelSerializer):
 
 
 class RequestCommentSerializer(serializers.ModelSerializer):
+    """Serializer para comentarios en solicitudes."""
     author_nombre = serializers.CharField(source='author.get_full_name', read_only=True)
 
     class Meta:

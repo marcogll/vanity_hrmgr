@@ -1,8 +1,11 @@
+"""Modelos para solicitudes de vacaciones y permisos."""
+
 from django.db import models
 from employees.models import Employee
 
 
 class Request(models.Model):
+    """Solicitud de vacaciones o permiso de un empleado."""
     TYPE_CHOICES = [
         ('vacacion', 'Vacación'),
         ('permiso', 'Permiso'),
@@ -32,6 +35,7 @@ class Request(models.Model):
         return f"{self.tipo} - {self.empleado} ({self.estatus})"
 
     def dias_solicitados(self):
+        """Calcula días hábiles solicitados excluyendo fines de semana y festivos."""
         from datetime import date, timedelta
         dias = 0
         actual = self.fecha_inicio
@@ -45,6 +49,7 @@ class Request(models.Model):
 
 
 class RequestComment(models.Model):
+    """Comentario en el historial de una solicitud."""
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey('employees.User', on_delete=models.SET_NULL, null=True)
     contenido = models.TextField()

@@ -1,8 +1,16 @@
+"""Formularios Django para registro de inasistencias."""
+
 from django import forms
 from .models import Absence
 from employees.models import Employee, Branch
 
+
 class AbsenceForm(forms.ModelForm):
+    """Formulario de registro de inasistencia con filtros por sucursal.
+
+    Para managers, limita las opciones de sucursal y empleado
+    a las sucursales que tienen asignadas.
+    """
     class Meta:
         model = Absence
         fields = ['empleado', 'fecha', 'sucursal', 'tipo', 'motivo']
@@ -15,6 +23,7 @@ class AbsenceForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """Filtra sucursales y empleados según rol del usuario."""
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if user and user.role == 'manager':

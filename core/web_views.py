@@ -1,3 +1,5 @@
+"""Vistas web del dashboard para Admin, Manager y Colaborador."""
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
@@ -13,6 +15,7 @@ from .reports import generate_excel_report
 
 
 def login_view(request):
+    """Vista de autenticación por sesión para el dashboard web."""
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -25,12 +28,18 @@ def login_view(request):
 
 
 def logout_view(request):
+    """Cierra la sesión del usuario y redirige al login."""
     logout(request)
     return redirect('login')
 
 
 @login_required
 def dashboard(request):
+    """Dashboard principal con métricas operativas según rol del usuario.
+
+    Admin/Manager: KPIs globales, solicitudes pendientes, calendario
+    Colaborador: Perfil personal, saldo de vacaciones, últimas solicitudes
+    """
     user = request.user
 
     if user.role in ['admin', 'manager']:
@@ -47,7 +56,6 @@ def dashboard(request):
             fecha__gte=date.today() - timedelta(days=7)
         ).count()
 
-        # Monthly Metrics
         first_day_month = date.today().replace(day=1)
         absences_month = Absence.objects.filter(fecha__gte=first_day_month).count()
         requests_month = Request.objects.filter(created_at__date__gte=first_day_month).count()
@@ -80,6 +88,7 @@ def dashboard(request):
 
 @login_required
 def empleados_view(request):
+    """Lista de empleados con búsqueda por nombre, número y CURP."""
     user = request.user
     search = request.GET.get('search', '')
 
@@ -102,6 +111,7 @@ def empleados_view(request):
 
 @login_required
 def solicitudes_view(request):
+    """Lista de solicitudes con filtros por estatus y tipo."""
     user = request.user
     status_filter = request.GET.get('status', '')
     tipo_filter = request.GET.get('tipo', '')
@@ -122,6 +132,11 @@ def solicitudes_view(request):
 
 @login_required
 def solicitudes_pendientes_view(request):
+    """Panel de aprobación rápida para solicitudes pendientes.
+
+    Permite aprobar o rechazar con comentario opcional.
+    Al aprobar vacaciones, descuenta automáticamente del saldo.
+    """
     if request.user.role not in ['admin', 'manager']:
         return redirect('dashboard')
 
@@ -160,6 +175,7 @@ def solicitudes_pendientes_view(request):
 
 @login_required
 def ausencias_view(request):
+    """Historial de inasistencias con filtros por sucursal, tipo y fecha."""
     if request.user.role not in ['admin', 'manager']:
         return redirect('dashboard')
 
@@ -210,6 +226,10 @@ def ausencias_view(request):
 
 @login_required
 def registrar_ausencia(request):
+    """Formulario de registro de inasistencia para Manager/Admin.
+
+    Crea automáticamente un registro de auditoría al guardar.
+    """
     if request.user.role not in ['admin', 'manager']:
         return redirect('dashboard')
 
@@ -236,6 +256,7 @@ def registrar_ausencia(request):
 
 @login_required
 def sucursales_view(request):
+    """Lista de sucursales. Acceso exclusivo para Admin."""
     if request.user.role != 'admin':
         return redirect('dashboard')
 
@@ -245,6 +266,7 @@ def sucursales_view(request):
 
 @login_required
 def reportes_view(request):
+    """Página de reportes con enlaces a exportación Excel."""
     if request.user.role != 'admin':
         return redirect('dashboard')
 
@@ -253,6 +275,7 @@ def reportes_view(request):
 
 @login_required
 def exportar_vacaciones(request):
+    """Exporta reporte de vacaciones por sucursal a Excel."""
     if request.user.role != 'admin':
         return redirect('dashboard')
 
@@ -274,6 +297,7 @@ def exportar_vacaciones(request):
 
 @login_required
 def exportar_permisos(request):
+    """Exporta historial de permisos a Excel con estatus y observaciones."""
     if request.user.role != 'admin':
         return redirect('dashboard')
 
@@ -297,6 +321,7 @@ def exportar_permisos(request):
 
 @login_required
 def exportar_ausencias(request):
+    """Exporta registro de inasistencias a Excel."""
     if request.user.role != 'admin':
         return redirect('dashboard')
 
@@ -318,6 +343,7 @@ def exportar_ausencias(request):
 
 @login_required
 def mi_perfil(request):
+    """Panel de transparencia personal del empleado."""
     try:
         employee = request.user.employee
         solicitudes = Request.objects.filter(empleado=employee)
@@ -329,6 +355,7 @@ def mi_perfil(request):
 
 @login_required
 def mis_solicitudes(request):
+    """Historial completo de solicitudes del empleado."""
     try:
         employee = request.user.employee
         solicitudes = Request.objects.filter(empleado=employee).order_by('-created_at')
@@ -339,6 +366,7 @@ def mis_solicitudes(request):
 
 @login_required
 def nueva_solicitud(request):
+    """Formulario para crear nueva solicitud de vacaciones o permiso."""
     if request.method == 'POST':
         try:
             employee = request.user.employee

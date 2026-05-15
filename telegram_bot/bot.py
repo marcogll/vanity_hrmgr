@@ -1,3 +1,17 @@
+"""Bot de Telegram para notificaciones y aprobaciones de solicitudes.
+
+Comandos:
+    /start - Inicia el bot
+    /help - Muestra ayuda
+    /pendientes - Lista solicitudes pendientes
+
+Flujo de aprobación:
+    1. Admin recibe notificación con detalles de nueva solicitud
+    2. Botones inline [Aprobar] [Rechazar]
+    3. Al seleccionar, se solicita comentario opcional
+    4. Se actualiza estatus y se notifica al empleado
+"""
+
 import os
 import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -12,6 +26,7 @@ APROBAR, RECHAZAR, COMENTARIO = range(3)
 HANDLERS = {}
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Maneja el comando /start con mensaje de bienvenida."""
     await update.message.reply_text(
         "👋 ¡Bienvenido al Bot de HR Manager!\n\n"
         "Este bot te permite aprobar o rechazar solicitudes de permisos y vacaciones.\n\n"
@@ -19,6 +34,7 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Maneja el comando /help mostrando comandos disponibles."""
     await update.message.reply_text(
         "📋 Comandos disponibles:\n\n"
         "/start - Iniciar el bot\n"
@@ -27,6 +43,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 async def mostrar_solicitud(update: Update, context: ContextTypes.DEFAULT_TYPE, request_obj: Request):
+    """Muestra los detalles de una solicitud con botones de acción."""
     keyboard = [
         [
             InlineKeyboardButton("✅ Aprobar", callback_data=f"aprobar_{request_obj.id}"),
@@ -54,6 +71,7 @@ async def mostrar_solicitud(update: Update, context: ContextTypes.DEFAULT_TYPE, 
         await update.message.reply_text(mensaje, reply_markup=reply_markup)
 
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Procesa los clicks en botones inline de aprobar/rechazar."""
     query = update.callback_query
     await query.answer()
 
@@ -66,6 +84,7 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await mostrar_formulario_accion(update, context, request_id, "rechazar")
 
 async def mostrar_formulario_accion(update: Update, context: ContextTypes.DEFAULT_TYPE, request_id: int, accion: str):
+    """Solicita comentario opcional antes de procesar la acción."""
     try:
         request_obj = Request.objects.get(id=request_id)
     except Request.DoesNotExist:
@@ -84,6 +103,7 @@ async def mostrar_formulario_accion(update: Update, context: ContextTypes.DEFAUL
     return COMENTARIO
 
 async def comentario_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Procesa el comentario del admin y actualiza la solicitud."""
     user_id = update.message.from_user.id
     if user_id not in HANDLERS:
         await update.message.reply_text("No hay solicitud en proceso")
@@ -133,6 +153,7 @@ async def comentario_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text("❌ Solicitud no encontrada")
 
 async def pendientes_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Lista las últimas 10 solicitudes pendientes."""
     pendientes = Request.objects.filter(estatus='pendiente')[:10]
     if not pendientes:
         await update.message.reply_text("No hay solicitudes pendientes")
@@ -143,6 +164,11 @@ async def pendientes_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 
 def setup_bot():
+    """Inicializa y configura la aplicación del bot de Telegram.
+
+    Returns:
+        Application: Instancia configurada del bot o None si no hay token
+    """
     token = settings.TELEGRAM_BOT_TOKEN
     if not token:
         logger.warning("TELEGRAM_BOT_TOKEN no configurado")
@@ -159,6 +185,11 @@ def setup_bot():
 
 
 async def notificar_nueva_solicitud(request_id: int):
+    """Envía notificación al admin cuando se crea una nueva solicitud.
+
+    Args:
+        request_id: ID de la solicitud recién creada
+    """
     from django.conf import settings
     from telegram import Bot
 

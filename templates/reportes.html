@@ -3,25 +3,25 @@
 {% block content %}
 <h2>Reportes</h2>
 <div class="row mt-4">
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm h-100">
+    <div class="col-md-4 mb-3">
+        <div class="card p-3">
             <h5>Vacaciones por Sucursal</h5>
-            <p class="text-muted">Reporte de días de vacaciones y antigüedad de todos los empleados.</p>
-            <a href="{% url 'exportar_vacaciones' %}" class="btn btn-primary mt-auto">Generar Excel</a>
+            <p class="text-muted">Saldo de vacaciones y antigüedad de todos los empleados</p>
+            <a href="{% url 'exportar_vacaciones' %}" class="btn btn-success">📥 Exportar Excel</a>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm h-100">
+    <div class="col-md-4 mb-3">
+        <div class="card p-3">
             <h5>Permisos por Periodo</h5>
-            <p class="text-muted">Reporte de todos los permisos solicitados en el sistema.</p>
-            <a href="{% url 'exportar_permisos' %}" class="btn btn-primary mt-auto">Generar Excel</a>
+            <p class="text-muted">Historial completo de permisos con estatus y observaciones</p>
+            <a href="{% url 'exportar_permisos' %}" class="btn btn-success">📥 Exportar Excel</a>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm h-100">
+    <div class="col-md-4 mb-3">
+        <div class="card p-3">
             <h5>Inasistencias</h5>
-            <p class="text-muted">Reporte completo de inasistencias registradas.</p>
-            <a href="{% url 'exportar_ausencias' %}" class="btn btn-primary mt-auto">Generar Excel</a>
+            <p class="text-muted">Registro de faltas clasificadas por tipo y sucursal</p>
+            <a href="{% url 'exportar_ausencias' %}" class="btn btn-success">📥 Exportar Excel</a>
         </div>
     </div>
 </div>

@@ -1,3 +1,5 @@
+"""Management command para cargar feriados mexicanos estándar 2024-2026."""
+
 from django.core.management.base import BaseCommand
 from holidays.models import Holiday
 from datetime import date
@@ -7,6 +9,7 @@ class Command(BaseCommand):
     help = 'Seed holidays for Mexico for 2024-2026'
 
     def handle(self, *args, **options):
+        """Carga feriados mexicanos usando get_or_create para evitar duplicados."""
         holidays = [
             (2024, 1, 1, 'Año Nuevo'),
             (2024, 2, 5, 'Día de la Constitución'),

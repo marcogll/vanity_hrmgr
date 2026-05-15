@@ -1,8 +1,11 @@
+"""Modelos para gestión de empleados, sucursales y auditoría."""
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
+    """Modelo de usuario personalizado con roles y autenticación múltiple."""
     ROLE_CHOICES = [
         ('admin', 'Administrador'),
         ('manager', 'Gerente'),
@@ -17,6 +20,7 @@ class User(AbstractUser):
 
 
 class Branch(models.Model):
+    """Representa una sucursal física de la empresa."""
     name = models.CharField(max_length=200)
     address = models.TextField(blank=True)
     active = models.BooleanField(default=True)
@@ -32,6 +36,7 @@ class Branch(models.Model):
 
 
 class Employee(models.Model):
+    """Perfil extendido del empleado con datos laborales y saldo de vacaciones."""
     STATUS_CHOICES = [
         ('activo', 'Activo'),
         ('baja', 'Baja'),
@@ -63,12 +68,14 @@ class Employee(models.Model):
         return f"{self.employee_number} - {self.user.get_full_name()}"
 
     def calcular_antiguedad(self):
+        """Calcula la antigüedad en años desde la fecha de ingreso."""
         from datetime import date
         today = date.today()
         delta = today - self.fecha_ingreso
         return delta.days // 365
 
     def get_dias_vacaciones(self):
+        """Retorna los días de vacaciones según antigüedad (LFT Art. 76)."""
         antiguedad = self.calcular_antiguedad()
         if antiguedad >= 20:
             return 20
@@ -90,6 +97,7 @@ class Employee(models.Model):
 
 
 class EmployeeAudit(models.Model):
+    """Registro de auditoría para cambios en datos de empleados."""
     ACTION_CHOICES = [
         ('create', 'Creado'),
         ('update', 'Actualizado'),

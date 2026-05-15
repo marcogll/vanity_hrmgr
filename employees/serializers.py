@@ -1,8 +1,11 @@
+"""Serializers para la API REST de empleados, sucursales y usuarios."""
+
 from rest_framework import serializers
 from .models import User, Branch, Employee
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Serializer para datos básicos del usuario."""
     full_name = serializers.CharField(source='get_full_name', read_only=True)
 
     class Meta:
@@ -12,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class BranchSerializer(serializers.ModelSerializer):
+    """Serializer para sucursales con conteo de empleados activos."""
     empleados_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,10 +23,12 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'address', 'active', 'empleados_count', 'created_at']
 
     def get_empleados_count(self, obj):
+        """Retorna el número de empleados activos en la sucursal."""
         return obj.employees.filter(status='activo').count()
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    """Serializer de lectura para empleados con datos enriquecidos."""
     user = UserSerializer(read_only=True)
     branch_nombre = serializers.CharField(source='branch.name', read_only=True)
     manager_nombre = serializers.CharField(source='manager.user.get_full_name', read_only=True)
@@ -45,6 +51,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
 class EmployeeCreateSerializer(serializers.ModelSerializer):
+    """Serializer de escritura para crear empleados con usuario asociado."""
     email = serializers.EmailField(write_only=True)
     password = serializers.CharField(write_only=True, required=False)
 
@@ -54,6 +61,7 @@ class EmployeeCreateSerializer(serializers.ModelSerializer):
                   'branch', 'manager', 'status', 'email', 'password', 'first_name', 'last_name']
 
     def create(self, validated_data):
+        """Crea el usuario y luego el empleado vinculado."""
         email = validated_data.pop('email', None)
         password = validated_data.pop('password', 'password123')
         first_name = validated_data.pop('first_name', '')

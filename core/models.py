@@ -1,7 +1,10 @@
+"""Modelos de catálogo: configuraciones globales y logs de notificaciones."""
+
 from django.db import models
 
 
 class Configuration(models.Model):
+    """Almacena configuraciones globales del sistema como pares clave-valor."""
     key = models.CharField(max_length=100, unique=True)
     value = models.TextField()
     description = models.CharField(max_length=255, blank=True)
@@ -13,6 +16,7 @@ class Configuration(models.Model):
 
     @classmethod
     def get(cls, key, default=None):
+        """Obtiene el valor de una configuración por su clave."""
         try:
             return cls.objects.get(key=key).value
         except cls.DoesNotExist:
@@ -20,6 +24,7 @@ class Configuration(models.Model):
 
     @classmethod
     def set(cls, key, value, description=''):
+        """Crea o actualiza una configuración."""
         obj, created = cls.objects.update_or_create(
             key=key,
             defaults={'value': value, 'description': description}
@@ -28,6 +33,7 @@ class Configuration(models.Model):
 
 
 class NotificationLog(models.Model):
+    """Registro de todas las notificaciones enviadas (Telegram, email, etc)."""
     TYPE_CHOICES = [
         ('telegram', 'Telegram'),
         ('email', 'Email'),

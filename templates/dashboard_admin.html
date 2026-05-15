@@ -29,24 +29,23 @@
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card p-3 shadow-sm">
-            <h5>Métricas Mensuales</h5>
-            <div class="row text-center mt-2">
-                <div class="col-md-4">
-                    <p class="text-muted mb-0">Ausencias este mes</p>
-                    <h3 class="text-danger">{{ absences_month }}</h3>
-                </div>
-                <div class="col-md-4">
-                    <p class="text-muted mb-0">Solicitudes creadas</p>
-                    <h3 class="text-primary">{{ requests_month }}</h3>
-                </div>
-                <div class="col-md-4">
-                    <p class="text-muted mb-0">Vacaciones aprobadas</p>
-                    <h3 class="text-success">{{ vacations_approved }}</h3>
-                </div>
-            </div>
+<div class="row mt-3">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Inasistencias (mes)</h5>
+            <h2>{{ absences_month }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Solicitudes (mes)</h5>
+            <h2>{{ requests_month }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Vacaciones Aprob. (mes)</h5>
+            <h2 class="text-success">{{ vacations_approved }}</h2>
         </div>
     </div>
 </div>
@@ -57,9 +56,7 @@
             <h5>Solicitudes Pendientes</h5>
             {% if solicitudes_pendientes %}
             <table class="table">
-                <thead>
-                    <tr><th>Empleado</th><th>Tipo</th><th>Fechas</th><th>Acción</th></tr>
-                </thead>
+                <thead><tr><th>Empleado</th><th>Tipo</th><th>Fechas</th><th>Acción</th></tr></thead>
                 <tbody>
                     {% for s in solicitudes_pendientes %}
                     <tr>
@@ -89,8 +86,7 @@
 $(document).ready(function() {
     $('#calendar').fullCalendar({
         locale: 'es',
-        header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek' },
-        events: '/api/requests/?format=json'
+        header: { left: 'prev,next today', center: 'title', right: 'month,agendaWeek' }
     });
 });
 </script>
