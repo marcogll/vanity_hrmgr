@@ -1,3 +1,23 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/marcogll/mg_data_storage/refs/heads/main/soul23/logo/soul23_logo.svg" width="110" alt="Soul23">
+</p>
+
+<h1 align="center">Server Setup Assistant</h1>
+
+<p align="center">
+  Asistente automatizado para la configuración de servidores Ubuntu 24.04 🚀
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Ubuntu_24.04-3a3a3a?style=flat-square&logo=ubuntu&logoColor=white" alt="Ubuntu 24.04">
+  <img src="https://img.shields.io/badge/Docker-3a3a3a?style=flat-square&logo=docker&logoColor=white" alt="Docker">
+  <img src="https://img.shields.io/badge/Zsh-3a3a3a?style=flat-square&logo=zsh&logoColor=white" alt="Zsh">
+  <img src="https://img.shields.io/badge/Homebrew-3a3a3a?style=flat-square&logo=homebrew&logoColor=white" alt="Homebrew">
+  <img src="https://img.shields.io/badge/Catppuccin-3a3a3a?style=flat-square&logo=catppuccin&logoColor=white" alt="Catppuccin">
+</p>
+
+---
+
 # Sistema de Control de Permisos, Vacaciones e Inasistencias
 
 Plataforma web centralizada para la gestión de colaboradores, vacaciones, permisos e incidencias con integración directa a Telegram para aprobaciones administrativas en tiempo real.
